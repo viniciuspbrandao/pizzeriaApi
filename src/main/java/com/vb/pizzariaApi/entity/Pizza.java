@@ -20,7 +20,7 @@ public class Pizza {
     private Integer id;
     private String namePizza;
     private int ingredients;
-    private LocalDate dataPedido;
+//    private LocalDate dataPedido;
 
     @OneToMany
     private List<Cliente> cliente;
