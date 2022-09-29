@@ -19,8 +19,6 @@ public class Pizza {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String namePizza;
-
-//    @Column(unique = true)
     private int ingredients;
     private LocalDate dataPedido;
 
