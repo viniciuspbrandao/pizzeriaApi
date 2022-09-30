@@ -16,10 +16,12 @@ public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String clientName;
-    private String clientAdress;
-    private String phone;
 
-    @ManyToOne
-    private Pizza pizza;
+    private String clientName;
+//    private String clientAdress;
+//    private String clientPhone;
+
+//    @ManyToOne
+//    @JoinColumn() // nullable = false / name = "pizza_id"
+//    private Pizza pizza;
 }

@@ -24,6 +24,10 @@ public class Pizza {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime requestDateTime;
 
-    @OneToMany
-    private List<Cliente> cliente;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Cliente> clientes;
+
+//    @JoinColumn(name = "client_id")// Aqui entra a coluna com a foregn Key
+//    private List<Cliente> cliente;
+
 }
