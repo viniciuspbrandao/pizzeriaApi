@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 
 @Data
@@ -24,8 +23,9 @@ public class Pizza {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime requestDateTime;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Cliente> clientes;
+
+//    @OneToMany(cascade = CascadeType.ALL)
+//    private List<Telefone> telefones;
 
 //    @JoinColumn(name = "client_id")// Aqui entra a coluna com a foregn Key
 //    private List<Cliente> cliente;

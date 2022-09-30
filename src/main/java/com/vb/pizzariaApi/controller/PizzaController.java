@@ -1,70 +1,58 @@
 package com.vb.pizzariaApi.controller;
 
-import com.vb.pizzariaApi.entity.Cliente;
-import com.vb.pizzariaApi.entity.Pizza;
+import com.vb.pizzariaApi.entity.entityDTO.PizzaDTO;
 import com.vb.pizzariaApi.service.PizzaService;
+
 import org.modelmapper.ModelMapper;
-
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/pizza")
 public class PizzaController {
 
     @Autowired
-    private PizzaService pizzaService;
+    private ModelMapper mapper;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private PizzaService pizzaService;
+
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Pizza save(@RequestBody Pizza pizza){
-        return pizzaService.save(pizza);
+    public ResponseEntity<PizzaDTO> create(@RequestBody PizzaDTO obj) {
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{id}").buildAndExpand(pizzaService.create(obj).getId()).toUri();
+        return ResponseEntity.created(uri).build();
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<Pizza> pizzaList(){
-        return pizzaService.pizzaList();
+    public ResponseEntity<List<PizzaDTO>> findAll(){
+        return ResponseEntity.ok()
+                .body(pizzaService.findAll()
+                .stream().map(x -> mapper.map(x,PizzaDTO.class)).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Pizza findById(@PathVariable("id") Integer id){
-        return pizzaService.findById(id)
-                .orElseThrow(() -> new
-                        ResponseStatusException(HttpStatus.NOT_FOUND, "Id not found."));
+    public ResponseEntity<PizzaDTO> findById(@PathVariable Integer id) {
+        return ResponseEntity.ok().body(mapper.map(pizzaService.findById(id),PizzaDTO.class));
     }
 
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removePizz(@PathVariable("id") Integer id){
-        pizzaService.findById(id)
-                .map(pizza -> {
-                    pizzaService.deleteById(pizza.getId());
-                    return Void.TYPE;
-                }) .orElseThrow(() -> new
-                        ResponseStatusException(HttpStatus.NOT_FOUND, "Id not found."));
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<PizzaDTO> delete(@PathVariable Integer id){
+        pizzaService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
-
-    @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updatePizza(@PathVariable("id") Integer id, @RequestBody Pizza pizza){
-        pizzaService.findById(id)
-                .map(pizzaBase -> {
-                    modelMapper.map(pizza, pizzaBase);
-                            pizzaService.save(pizzaBase);
-                    return Void.TYPE;
-                }).orElseThrow(() -> new
-                        ResponseStatusException(HttpStatus.NOT_FOUND, "Id not found."));
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<PizzaDTO> update(@PathVariable Integer id,@RequestBody PizzaDTO obj) {
+        obj.setId(id);
+        return ResponseEntity.ok().body(mapper.map(pizzaService.update(obj), PizzaDTO.class));
     }
 
 }
